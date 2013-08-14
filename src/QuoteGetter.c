@@ -10,36 +10,39 @@ PBL_APP_INFO(MY_UUID,
              DEFAULT_MENU_ICON,
              APP_INFO_STANDARD_APP);
 
+#define TEXT1 1
+#define TEXT2 2
+
 Window window;
+Layer anzeige_1;
+Layer anzeige_2;
+
+static char text_1[32];
+static char text_2[32];
 
 AppSync sync;
-uint8_t sync_buffer[32];
+uint8_t sync_buffer[512];
 
 
 void upClicked(ClickRecognizerRef recognizer, Window *window) {
    //... called on single click ...
+  (void)recognizer;
    (void)window;
-   upORdown = UP;
-   Tuplet upDownTuplet[] = {TupletInteger(UPDOWN, (uint8_t) upORdown)};
-   app_sync_set(&sync, upDownTuplet, ARRAY_LENGTH(upDownTuplet));
+
+   // Tuplet upDownTuplet[] = {TupletInteger(UPDOWN, (uint8_t) upORdown)};
+   // app_sync_set(&sync, upDownTuplet, ARRAY_LENGTH(upDownTuplet));
 }
 
 void downClicked(ClickRecognizerRef recognizer, Window *window) {
    //... called on single click ...
+  (void)recognizer;
    (void)window;
-   upORdown = DOWN;
-   Tuplet upDownTuplet[] = {TupletInteger(UPDOWN, (uint8_t) upORdown)};
-   app_sync_set(&sync, upDownTuplet, ARRAY_LENGTH(upDownTuplet));
 }
 
 void select_set_handler(ClickRecognizerRef recognizer, Window *window) {
   (void)recognizer;
   (void)window;
-  
-   upORdown = SELECT;
-   Tuplet upDownTuplet[] = {TupletInteger(UPDOWN, (uint8_t) upORdown)};
-   app_sync_set(&sync, upDownTuplet, ARRAY_LENGTH(upDownTuplet));
-}
+  }
 
 void click_config_provider(ClickConfig **config, Window *window) {
   // See ui/click.h for more information and default values.
