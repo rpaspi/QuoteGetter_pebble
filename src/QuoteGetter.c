@@ -64,16 +64,12 @@ static void sync_tuple_changed_callback(const uint32_t key, const Tuple* new_tup
 
       switch (key) {
       case TEXT1:
-        /*
-        strncpy(text_1, new_tuple->value->cstring, sizeof(new_tuple->value->cstring));
+        strcpy(text_1, new_tuple->value->cstring);
         layer_mark_dirty(&anzeige_1);
-        */
         break;
       case TEXT2:
-        /*
-        strncpy(text_2, new_tuple->value->cstring, sizeof(new_tuple->value->cstring));
+        strcpy(text_2, new_tuple->value->cstring);
         layer_mark_dirty(&anzeige_2);
-        */
         break;
       }
 }
@@ -89,7 +85,7 @@ void update_anzeige_1_callback(Layer *me, GContext* ctx) {
   
   graphics_context_set_text_color(ctx, GColorBlack);
   graphics_text_draw(ctx,
-		     "text_1",
+		     text_1,
 		     fonts_get_system_font(FONT_KEY_GOTHIC_18_BOLD),
 		     GRect(0,0,55,28),
 		     GTextOverflowModeWordWrap,
@@ -102,7 +98,7 @@ void update_anzeige_2_callback(Layer *me, GContext* ctx) {
   
   graphics_context_set_text_color(ctx, GColorBlack);
   graphics_text_draw(ctx,
-		     "text_2",
+		     text_2,
 		     fonts_get_system_font(FONT_KEY_GOTHIC_18_BOLD),
 		     GRect(0,0,55,28),
 		     GTextOverflowModeWordWrap,
@@ -132,8 +128,8 @@ void handle_init(AppContextRef ctx) {
   window_set_click_config_provider(&window, (ClickConfigProvider) click_config_provider);
 
   Tuplet initial_values[] = {
-    TupletCString(TEXT1, "Hallo"),
-    TupletCString(TEXT2, "Hallo"),
+    TupletCString(TEXT1, "Hallo 1"),
+    TupletCString(TEXT2, "Hallo 2"),
   };
   app_sync_init(&sync, sync_buffer, sizeof(sync_buffer), initial_values, ARRAY_LENGTH(initial_values), sync_tuple_changed_callback, sync_error_callback, NULL);
 }
