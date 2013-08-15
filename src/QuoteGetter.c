@@ -7,7 +7,7 @@
 PBL_APP_INFO(MY_UUID,
              "QuoteGetter", "rpaspi",
              1, 0, /* App version */
-             DEFAULT_MENU_ICON,
+             RESOURCE_ID_IMAGE_MENU_ICON,
              APP_INFO_STANDARD_APP);
 
 #define TEXT1 1
@@ -63,22 +63,18 @@ static void sync_tuple_changed_callback(const uint32_t key, const Tuple* new_tup
       (void) old_tuple;
 
       switch (key) {
-      case UPDOWN:
-        break;
-      case DISPLAY:
-        strncpy(anzeige, new_tuple->value->cstring, 6);
-        layer_mark_dirty(&anzeigeText);
-        break;
+      case TEXT1:
         /*
-      case QUOTELAST:
-        strncpy(appleData.last, new_tuple->value->cstring, 7);
-        layer_mark_dirty(&quoteApple);
-        break;
-      case QUOTECHANGE:
-        strncpy(appleChange, new_tuple->value->cstring, 6);
-        layer_mark_dirty(&changeText);
-        break;
+        strncpy(text_1, new_tuple->value->cstring, sizeof(new_tuple->value->cstring));
+        layer_mark_dirty(&anzeige_1);
         */
+        break;
+      case TEXT2:
+        /*
+        strncpy(text_2, new_tuple->value->cstring, sizeof(new_tuple->value->cstring));
+        layer_mark_dirty(&anzeige_2);
+        */
+        break;
       }
 }
 
@@ -88,12 +84,12 @@ static void sync_error_callback(DictionaryResult dict_error, AppMessageResult ap
       (void) context;
 }
 
-void update_anzeigeText_callback(Layer *me, GContext* ctx) {
+void update_anzeige_1_callback(Layer *me, GContext* ctx) {
   (void)me;
   
   graphics_context_set_text_color(ctx, GColorBlack);
   graphics_text_draw(ctx,
-		     anzeige,
+		     text_1,
 		     fonts_get_system_font(FONT_KEY_GOTHIC_18_BOLD),
 		     GRect(0,0,140,24),
 		     GTextOverflowModeWordWrap,
@@ -101,19 +97,18 @@ void update_anzeigeText_callback(Layer *me, GContext* ctx) {
 		     NULL);
 }
 
-void update_changeText_callback(Layer *me, GContext* ctx) {
+void update_anzeige_2_callback(Layer *me, GContext* ctx) {
   (void)me;
   
   graphics_context_set_text_color(ctx, GColorBlack);
   graphics_text_draw(ctx,
-		     "+1.23\%",
+		     text_2,
 		     fonts_get_system_font(FONT_KEY_GOTHIC_18_BOLD),
-		     GRect(0,0,47,28),
+		     GRect(0,0,140,24),
 		     GTextOverflowModeWordWrap,
 		     GTextAlignmentLeft,
 		     NULL);
 }
-
 
 void handle_init(AppContextRef ctx) {
   (void)ctx;
@@ -121,31 +116,24 @@ void handle_init(AppContextRef ctx) {
   window_init(&window, "Window Name");
   window_stack_push(&window, true /* Animated */);
 
-  layer_init(&anzeigeText, window.layer.frame);
-  anzeigeText.update_proc = update_anzeigeText_callback;
-  layer_set_frame(&anzeigeText, GRect(42,10,55,28));
-  layer_add_child(&window.layer, &anzeigeText);
-  layer_mark_dirty(&anzeigeText);
+  layer_init(&anzeige_1, window.layer.frame);
+  anzeige_1.update_proc = update_anzeige_1_callback;
+  layer_set_frame(&anzeige_1, GRect(42,10,55,28));
+  layer_add_child(&window.layer, &anzeige_1);
+  layer_mark_dirty(&anzeige_1);
   
-  text_layer_init(&appleText, GRect(2,10,40,28));
-  text_layer_set_font(&appleText, fonts_get_system_font(FONT_KEY_GOTHIC_18_BOLD));
-  text_layer_set_text(&appleText, appleSymbol);
-  layer_add_child(&window.layer, &appleText.layer);
-
-  layer_init(&changeText, window.layer.frame);
-  changeText.update_proc = update_changeText_callback;
-  layer_set_frame(&changeText, GRect(97,10,47,28));
-  layer_add_child(&window.layer, &changeText);
-  layer_mark_dirty(&changeText);
+  layer_init(&anzeige_2, window.layer.frame);
+  anzeige_1.update_proc = update_anzeige_2_callback;
+  layer_set_frame(&anzeige_1, GRect(42,40,55,28));
+  layer_add_child(&window.layer, &anzeige_2);
+  layer_mark_dirty(&anzeige_2);
   
-
   // Attach our desired button functionality
   window_set_click_config_provider(&window, (ClickConfigProvider) click_config_provider);
 
   Tuplet initial_values[] = {
-    TupletInteger(UPDOWN, (uint8_t) upORdown),
-    TupletCString(DISPLAY, "Hallo"),
-    TupletCString(QUOTECHANGE, "+0.0\%"),
+    TupletCString(TEXT1, "Hallo"),
+    TupletCString(TEXT2, "Hallo"),
   };
   app_sync_init(&sync, sync_buffer, sizeof(sync_buffer), initial_values, ARRAY_LENGTH(initial_values), sync_tuple_changed_callback, sync_error_callback, NULL);
 }
