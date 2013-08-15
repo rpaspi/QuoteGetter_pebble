@@ -89,9 +89,9 @@ void update_anzeige_1_callback(Layer *me, GContext* ctx) {
   
   graphics_context_set_text_color(ctx, GColorBlack);
   graphics_text_draw(ctx,
-		     text_1,
+		     "text_1",
 		     fonts_get_system_font(FONT_KEY_GOTHIC_18_BOLD),
-		     GRect(0,0,140,24),
+		     GRect(0,0,55,28),
 		     GTextOverflowModeWordWrap,
 		     GTextAlignmentLeft,
 		     NULL);
@@ -102,9 +102,9 @@ void update_anzeige_2_callback(Layer *me, GContext* ctx) {
   
   graphics_context_set_text_color(ctx, GColorBlack);
   graphics_text_draw(ctx,
-		     text_2,
+		     "text_2",
 		     fonts_get_system_font(FONT_KEY_GOTHIC_18_BOLD),
-		     GRect(0,0,140,24),
+		     GRect(0,0,55,28),
 		     GTextOverflowModeWordWrap,
 		     GTextAlignmentLeft,
 		     NULL);
@@ -118,13 +118,13 @@ void handle_init(AppContextRef ctx) {
 
   layer_init(&anzeige_1, window.layer.frame);
   anzeige_1.update_proc = update_anzeige_1_callback;
-  layer_set_frame(&anzeige_1, GRect(42,10,55,28));
+  layer_set_frame(&anzeige_1, GRect(42,40,55,28));
   layer_add_child(&window.layer, &anzeige_1);
   layer_mark_dirty(&anzeige_1);
   
   layer_init(&anzeige_2, window.layer.frame);
-  anzeige_1.update_proc = update_anzeige_2_callback;
-  layer_set_frame(&anzeige_1, GRect(42,40,55,28));
+  anzeige_2.update_proc = update_anzeige_2_callback;
+  layer_set_frame(&anzeige_2, GRect(42,100,55,28));
   layer_add_child(&window.layer, &anzeige_2);
   layer_mark_dirty(&anzeige_2);
   
