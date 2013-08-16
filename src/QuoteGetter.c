@@ -10,15 +10,21 @@ PBL_APP_INFO(MY_UUID,
              RESOURCE_ID_IMAGE_MENU_ICON,
              APP_INFO_STANDARD_APP);
 
-#define TEXT1 1
-#define TEXT2 2
+#define STOCKSYMBOL1 1
+#define STOCKSYMBOL2 2
+#define STOCKQUOTE1  3
+#define STOCKQUOTE2  4
 
 Window window;
 Layer anzeige_1;
 Layer anzeige_2;
+Layer anzeige_3;
+Layer anzeige_4;
 
 static char text_1[32];
 static char text_2[32];
+static char quote_1[32];
+static char quote_2[32];
 
 AppSync sync;
 uint8_t sync_buffer[512];
@@ -63,13 +69,21 @@ static void sync_tuple_changed_callback(const uint32_t key, const Tuple* new_tup
       (void) old_tuple;
 
       switch (key) {
-      case TEXT1:
+      case STOCKSYMBOL1:
         strcpy(text_1, new_tuple->value->cstring);
         layer_mark_dirty(&anzeige_1);
         break;
-      case TEXT2:
+      case STOCKSYMBOL2:
         strcpy(text_2, new_tuple->value->cstring);
         layer_mark_dirty(&anzeige_2);
+        break;
+      case STOCKQUOTE1:
+        strcpy(quote_1, new_tuple->value->cstring);
+        layer_mark_dirty(&anzeige_3);
+        break;
+      case STOCKQUOTE2:
+        strcpy(quote_2, new_tuple->value->cstring);
+        layer_mark_dirty(&anzeige_4);
         break;
       }
 }
@@ -106,6 +120,32 @@ void update_anzeige_2_callback(Layer *me, GContext* ctx) {
 		     NULL);
 }
 
+void update_anzeige_3_callback(Layer *me, GContext* ctx) {
+  (void)me;
+  
+  graphics_context_set_text_color(ctx, GColorBlack);
+  graphics_text_draw(ctx,
+		     quote_1,
+		     fonts_get_system_font(FONT_KEY_GOTHIC_18_BOLD),
+		     GRect(0,0,95,28),
+		     GTextOverflowModeWordWrap,
+		     GTextAlignmentLeft,
+		     NULL);
+}
+
+void update_anzeige_4_callback(Layer *me, GContext* ctx) {
+  (void)me;
+  
+  graphics_context_set_text_color(ctx, GColorBlack);
+  graphics_text_draw(ctx,
+		     quote_2,
+		     fonts_get_system_font(FONT_KEY_GOTHIC_18_BOLD),
+		     GRect(0,0,95,28),
+		     GTextOverflowModeWordWrap,
+		     GTextAlignmentLeft,
+		     NULL);
+}
+
 void handle_init(AppContextRef ctx) {
   (void)ctx;
   
@@ -114,22 +154,36 @@ void handle_init(AppContextRef ctx) {
 
   layer_init(&anzeige_1, window.layer.frame);
   anzeige_1.update_proc = update_anzeige_1_callback;
-  layer_set_frame(&anzeige_1, GRect(42,40,55,28));
+  layer_set_frame(&anzeige_1, GRect(2,40,55,28));
   layer_add_child(&window.layer, &anzeige_1);
   layer_mark_dirty(&anzeige_1);
   
   layer_init(&anzeige_2, window.layer.frame);
   anzeige_2.update_proc = update_anzeige_2_callback;
-  layer_set_frame(&anzeige_2, GRect(42,100,55,28));
+  layer_set_frame(&anzeige_2, GRect(2,100,55,28));
   layer_add_child(&window.layer, &anzeige_2);
   layer_mark_dirty(&anzeige_2);
+  
+  layer_init(&anzeige_3, window.layer.frame);
+  anzeige_3.update_proc = update_anzeige_3_callback;
+  layer_set_frame(&anzeige_3, GRect(58,40,95,28));
+  layer_add_child(&window.layer, &anzeige_3);
+  layer_mark_dirty(&anzeige_3);
+  
+  layer_init(&anzeige_4, window.layer.frame);
+  anzeige_4.update_proc = update_anzeige_4_callback;
+  layer_set_frame(&anzeige_4, GRect(58,100,95,28));
+  layer_add_child(&window.layer, &anzeige_4);
+  layer_mark_dirty(&anzeige_4);
   
   // Attach our desired button functionality
   window_set_click_config_provider(&window, (ClickConfigProvider) click_config_provider);
 
   Tuplet initial_values[] = {
-    TupletCString(TEXT1, "Hallo 1"),
-    TupletCString(TEXT2, "Hallo 2"),
+    TupletCString(STOCKSYMBOL1, "Hallo 1"),
+    TupletCString(STOCKSYMBOL2, "Hallo 2"),
+    TupletCString(STOCKQUOTE1, "XXX.XX +X.XX"),
+    TupletCString(STOCKQUOTE2, "XXX.XX +X.XX"),
   };
   app_sync_init(&sync, sync_buffer, sizeof(sync_buffer), initial_values, ARRAY_LENGTH(initial_values), sync_tuple_changed_callback, sync_error_callback, NULL);
 }
