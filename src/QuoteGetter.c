@@ -14,12 +14,15 @@ PBL_APP_INFO(MY_UUID,
 #define STOCKSYMBOL2 2
 #define STOCKQUOTE1  3
 #define STOCKQUOTE2  4
+#define DY 18
 
 Window window;
 Layer anzeige_1;
 Layer anzeige_2;
 Layer anzeige_3;
 Layer anzeige_4;
+Layer anzeige_5;
+Layer anzeige_6;
 
 static char text_1[32];
 static char text_2[32];
@@ -146,6 +149,32 @@ void update_anzeige_4_callback(Layer *me, GContext* ctx) {
 		     NULL);
 }
 
+void update_anzeige_5_callback(Layer *me, GContext* ctx) {
+  (void)me;
+  
+  graphics_context_set_text_color(ctx, GColorBlack);
+  graphics_text_draw(ctx,
+		     "Hallo 3",
+		     fonts_get_system_font(FONT_KEY_GOTHIC_18_BOLD),
+		     GRect(0,0,95,28),
+		     GTextOverflowModeWordWrap,
+		     GTextAlignmentLeft,
+		     NULL);
+}
+
+void update_anzeige_6_callback(Layer *me, GContext* ctx) {
+  (void)me;
+  
+  graphics_context_set_text_color(ctx, GColorBlack);
+  graphics_text_draw(ctx,
+		     "Hallo 4",
+		     fonts_get_system_font(FONT_KEY_GOTHIC_18_BOLD),
+		     GRect(0,0,95,28),
+		     GTextOverflowModeWordWrap,
+		     GTextAlignmentLeft,
+		     NULL);
+}
+
 void handle_init(AppContextRef ctx) {
   (void)ctx;
   
@@ -154,27 +183,39 @@ void handle_init(AppContextRef ctx) {
 
   layer_init(&anzeige_1, window.layer.frame);
   anzeige_1.update_proc = update_anzeige_1_callback;
-  layer_set_frame(&anzeige_1, GRect(2,40,55,28));
+  layer_set_frame(&anzeige_1, GRect(2,0*DY,55,28));
   layer_add_child(&window.layer, &anzeige_1);
   layer_mark_dirty(&anzeige_1);
   
   layer_init(&anzeige_2, window.layer.frame);
   anzeige_2.update_proc = update_anzeige_2_callback;
-  layer_set_frame(&anzeige_2, GRect(2,100,55,28));
+  layer_set_frame(&anzeige_2, GRect(2,1*DY,55,28));
   layer_add_child(&window.layer, &anzeige_2);
   layer_mark_dirty(&anzeige_2);
   
   layer_init(&anzeige_3, window.layer.frame);
   anzeige_3.update_proc = update_anzeige_3_callback;
-  layer_set_frame(&anzeige_3, GRect(58,40,95,28));
+  layer_set_frame(&anzeige_3, GRect(58,0*DY,95,28));
   layer_add_child(&window.layer, &anzeige_3);
   layer_mark_dirty(&anzeige_3);
   
   layer_init(&anzeige_4, window.layer.frame);
   anzeige_4.update_proc = update_anzeige_4_callback;
-  layer_set_frame(&anzeige_4, GRect(58,100,95,28));
+  layer_set_frame(&anzeige_4, GRect(58,1*DY,95,28));
   layer_add_child(&window.layer, &anzeige_4);
   layer_mark_dirty(&anzeige_4);
+  
+  layer_init(&anzeige_5, window.layer.frame);
+  anzeige_5.update_proc = update_anzeige_5_callback;
+  layer_set_frame(&anzeige_5, GRect(2,2*DY,55,28));
+  layer_add_child(&window.layer, &anzeige_5);
+  layer_mark_dirty(&anzeige_5);
+  
+  layer_init(&anzeige_6, window.layer.frame);
+  anzeige_6.update_proc = update_anzeige_6_callback;
+  layer_set_frame(&anzeige_6, GRect(2,3*DY,55,28));
+  layer_add_child(&window.layer, &anzeige_6);
+  layer_mark_dirty(&anzeige_6);
   
   // Attach our desired button functionality
   window_set_click_config_provider(&window, (ClickConfigProvider) click_config_provider);
